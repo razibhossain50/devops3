@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:export": "next build && next export",
-    "predeploy": "npm run build:export"
+    "build:export": "next build"
   },
   "dependencies": {
     "next": "16.0.3",
