@@ -10,7 +10,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: checkout repo
         uses: actions/checkout@v4
@@ -28,9 +33,12 @@ jobs:
         env:
           NEXT_PUBLIC_PAGES_BASE_PATH: ${{ secrets.NEXT_PUBLIC_PAGES_BASE_PATH || '' }}
 
-      - name: Deploy to GitHub Pages (gh-pages branch)
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out
+          path: ./out
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
 
