@@ -1,0 +1,31 @@
+name: build & deploy to GitHub Pages
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: install deps
+        run: npm ci
+
+      - name: build & export
+        run: npm run build:export
+        env:
+          NEXT_PUBLIC_PAGES_BASE_PATH: ${{ secrets.NEXT_PUBLIC_PAGES_BASE_PATH || '' }}
+
+      - name: Deploy to GitHub Pages (gh-pages branch)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
